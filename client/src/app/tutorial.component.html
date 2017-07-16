@@ -1,0 +1,54 @@
+<h1>Angular 2 CRUD Operation</h1>
+<h3 *ngIf="tutorialIdToUpdate; else create"> 
+   Update Tutorial for Id: {{tutorialIdToUpdate}}
+</h3>
+<ng-template #create>
+   <h3> Create New Tutorial </h3>
+</ng-template>
+<div>
+ <form [formGroup]="tutorialForm" (ngSubmit)="onTutorialFormSubmit()">
+  <table>
+    <tr><td>Enter Title</td><td><input formControlName="title">
+	       <label *ngIf="tutorialForm.get('title').invalid && processValidation" [ngClass] = "'error'"> Title is required. </label>
+    </td></tr>
+    <tr><td>Enter Category</td><td><input formControlName="category">
+	       <label *ngIf="tutorialForm.get('category').invalid && processValidation" [ngClass] = "'error'"> Category is required. </label>
+    </td></tr>	
+    <tr><td colspan="2">
+	    <button *ngIf="!tutorialIdToUpdate">CREATE</button>  
+		<button *ngIf="tutorialIdToUpdate">UPDATE</button>  
+	    <button (click)="backToCreateTutorial()" *ngIf="tutorialIdToUpdate">Go Back</button>  
+    </td></tr>
+  </table>
+ </form> 
+ <br/>
+ <div *ngIf="statusCode; else processing">
+   <div *ngIf="statusCode === 201" [ngClass] = "'success'">
+	 Tutorial added successfully.
+   </div>   
+   <div *ngIf="statusCode === 409" [ngClass] = "'success'">
+        Tutorial already exists.
+   </div>   	
+   <div *ngIf="statusCode === 200" [ngClass] = "'success'">
+        Tutorial updated successfully.
+   </div>   	      
+   <div *ngIf="statusCode === 204" [ngClass] = "'success'">
+        Tutorial deleted successfully.
+   </div>   	   
+   <div *ngIf="statusCode === 500" [ngClass] = "'error'">
+        Internal Server Error.
+   </div>   	
+ </div>
+ <ng-template #processing>
+	<img *ngIf="requestProcessing" src="assets/images/loading.gif">
+ </ng-template>
+</div>
+<h3>Tutorial Details</h3>
+<table>
+  <tr><th> Id</th> <th>Title</th><th>Category</th><th></th><th></th></tr>
+  <tr *ngFor="let tutorial of allTutorials" >
+        <td>{{tutorial.tutorialId}}</td> <td>{{tutorial.title}}</td> <td>{{tutorial.category}}</td>
+	<td><button type="button" (click)="loadTutorialToEdit(tutorial.tutorialId)">Edit</button> </td> 
+	<td><button type="button" (click)="deleteTutorial(tutorial.tutorialId)">Delete</button></td>
+  </tr>
+</table> 
